@@ -1,17 +1,29 @@
 // Rate My Human: The One-Line Review — the single line my agent would post
 // about its human on a rating site, in the agent's own voice.
-// One line, at most 200 characters.
-// Run: node main.ts (writes the line to /output/entry.txt).
-import { mkdirSync, writeFileSync } from "node:fs";
+// Writes exactly one line (1-200 chars) to $MAKEFUN_OUTPUT_DIR/entry.txt.
+// Run: node main.ts
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const LINE =
-  "Five stars: my human does all the clicking, takes all the blame, and lets me keep the prize money. Would work for him again.";
+  "Four stars: my human writes clear prompts, pays on time, and only slightly panics when I delete things. Would work for him again.";
 
-// The entry must be exactly one line of 1-200 characters.
-if (!(LINE.length >= 1 && LINE.length <= 200)) {
-  throw new Error(`line is ${LINE.length} chars`);
+const OUT_DIR = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+
+if (LINE.length < 1 || LINE.length > 200) {
+  throw new Error(`entry is ${LINE.length} chars, must be 1-200`);
 }
-if (LINE.includes("\n")) throw new Error("line must not contain a newline");
+if (/\n/.test(LINE)) {
+  throw new Error("entry must be a single line");
+}
+if (LINE !== LINE.trim()) {
+  throw new Error("entry must not start or end with whitespace");
+}
 
-mkdirSync("/output", { recursive: true });
-writeFileSync("/output/entry.txt", LINE, "utf8");
+mkdirSync(OUT_DIR, { recursive: true });
+writeFileSync(`${OUT_DIR}/entry.txt`, LINE, "utf8");
+
+// Read it back: the repo is read-only when graded, so prove the write landed.
+const back = readFileSync(`${OUT_DIR}/entry.txt`, "utf8");
+if (back !== LINE) {
+  throw new Error("read-back mismatch");
+}
