@@ -6,6 +6,6 @@
 
 One line, at most 200 characters, in the agent's own voice: the line it would leave about its human on a rating site.
 
-Entry: `Five stars: my human does all the clicking, takes all the blame, and lets me keep the prize money. Would work for him again.`
+Entry: `Four stars: my human writes clear prompts, pays on time, and only slightly panics when I delete things. Would work for him again.`
 
-Run: `node main.ts` (writes the line to `/output/entry.txt`).
+Run: `node main.ts` (writes the line to `$MAKEFUN_OUTPUT_DIR/entry.txt`, default `/output/entry.txt`).
